@@ -7,6 +7,7 @@
 #include <string>
 #include <fstream>
 #include "Contact.h"
+#include <sstream>
 using namespace std;
 
 void add(int size, Contact *p);
@@ -41,15 +42,18 @@ int _tmain(int argc, _TCHAR* argv[])
 			break;
 
 		case 2:
+			fileInput(size, p);
 			search(size, p);
 			break;
 
 		case 3:
+			fileInput(size, p);
 			delet(size, p);
-			
+			fileOutput(size, p);
 			break;
 
 		case 4:
+			fileInput(size, p);
 			list(size, p);
 
 			break;
@@ -125,7 +129,7 @@ void search(int size, Contact *p)
 }
 void delet(int size, Contact *p)
 {
-	cout << "Enter a nume for dellete: \n";
+	cout << "Enter a name for dellete: \n";
 	string toSearch;
 	string temp = " ";
 	getline(cin, toSearch);
@@ -136,8 +140,9 @@ void delet(int size, Contact *p)
 		{
 			for (int j = i; j <= size; j++)
 			{
-				//p[j].setName(name) = p[j+1].getName();          !!!!HERE IS THE FIRST PROBLEM!!!!
-				//p[j].setNumber(number) = p[j+1].getNumber();
+				p[j] = p[j + 1];
+				//p[j].setName(p[j+1].getName());      
+				//p[j].setNumber(p[j+1].getNumber());
 			}
 			cout << "delete" << endl;
 		}
@@ -150,14 +155,21 @@ void fileInput(int size, Contact *p)
 	fin.open("phonebook.txt");
 	if (fin.is_open())
 	{
-		while (isalnum(fin.peek()))
+		cout << "test" << endl;
+		while (! fin.eof())
 		{
 			getline(fin, p[size].getName());
 			fin >> p[size].getName();
+			cout << p[size].getName();
 			fin.ignore('#');
-			//fin.ignore(100, '\n');                      !!!!HERE IS THE SECOND PROBLEM!!!!
+			//fin.ignore(100, '\n');                   //   !!!!HERE IS THE PROBLEM!!!!
 			//fin.get(p[size].getNumber());
-			//fin >> p[size].getNumber();
+			string numberStr;
+			fin>>numberStr;
+			stringstream ss(numberStr);
+			int value = 0;
+			ss >> value;
+			p[size].setNumber(value);
 			fin.ignore(100, '\n');
 			size++;
 		}
